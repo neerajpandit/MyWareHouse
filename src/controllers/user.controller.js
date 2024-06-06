@@ -96,7 +96,7 @@ const verifyUser = async (req, res) => {
   
       // Mark phone number as verified
       user.isPhoneVerified = true;
-      savedOTP='';
+      user.savedOTP='';
       await user.save();
   
       res.status(200).json({ message: "Phone number verified successfully" });
@@ -184,7 +184,7 @@ const requestOTP = asyncHandler(async (req, res) => {
   // Generate and send OTP to the user's phone number (You need to implement this function)
   const generateOTP = () => {
     // Define the length of the OTP
-    const otpLength = 6;
+    const otpLength = 5;
   
     // Generate a random OTP
     let otp = '';
@@ -195,10 +195,10 @@ const requestOTP = asyncHandler(async (req, res) => {
     return otp;
   };
   const otp = generateOTP();
-  const message = `Dear Customer, Your OTP for mobile number verification is ${otp}. Please do not share this OTP to anyone - BookMyWareHouse`;
+  // const message = `Dear Customer, Your OTP for mobile number verification is ${otp}. Please do not share this OTP to anyone - BookMyWareHouse`;
         
-  //sendOTP(phoneNo, otp)
-  sendOTP(phoneNo, message)
+  sendOTP(phoneNo, otp)
+  //sendOTP(phoneNo, message)
 
   // Save the OTP in user's session or database for verification later
   // For simplicity, let's assume we're storing it in memory
@@ -590,15 +590,16 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user).select('-password -refreshToken -isPhoneVerified -savedOTP');
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "User fetched successfully"));
+    .json(new ApiResponse(200,user, "User fetched successfully"));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  const { firstName, lastName, phoneNo, email, gender, birthday } = req.body;
+  const { username, phoneNo, email, address } = req.body;
 
-  if (!firstName && !lastName && !phoneNo && !email && !gender && !birthday) {
+  if (!username && !phoneNo && !email && !address) {
     throw new ApiError(400, "fields are required");
   }
 
@@ -606,12 +607,10 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        firstName: firstName,
-        lastName: lastName,
+        username: username,
         phoneNo: phoneNo,
         email: email,
-        gender: gender,
-        birthday: birthday,
+        address: address,
       },
     },
     { new: true }

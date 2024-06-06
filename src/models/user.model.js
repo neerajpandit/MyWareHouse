@@ -49,16 +49,16 @@ const userSchema = new Schema(
         type: Boolean,
         default: false
     },
+    address:{
+      type: String
+    },
     otpExpiration: {
       type: Date,
     },
     refreshToken: {
       type: String,
     },
-    googleId: {
-      type: String,
-      required: true, 
-      unique: true },
+
   },
   {
     timestamps: true,

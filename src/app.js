@@ -30,9 +30,11 @@ app.use(passport.session())
 
 import userRouter from "./routes/user.routes.js";
 import storageRouter from "./routes/storage.routes.js";
+import homeRouter from "./routes/home.routes.js"
 
 
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/storage",storageRouter)
+app.use("/api/v1/home",homeRouter)
 
 export { app };

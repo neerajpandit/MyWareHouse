@@ -11,6 +11,8 @@ import {
   verifyOTP,
   resetPassword,
   forgotPassword,
+  updateAccountDetails,
+  getCurrentUser
 
 } from "../controllers/user.controller.js";
 // import { googleAuth } from "../controllers/googleauth.controller.js";
@@ -26,32 +28,11 @@ router.route("/verifyandlogin").post(verifyOTPAndLogin);
 router.route("/deleteAccount").delete(verifyJWT, deleteAccount);
 router.route("/forgotpassword").post(requestOTPForgotPassword);
 router.route("/veryfiOTP").post(verifyOTP);
-router.route("/resetPassword").post(resetPassword)
+router.route("/resetPassword").post(resetPassword);
+router.route("/updateaccount").patch(verifyJWT,updateAccountDetails);
+router.route("/getCurrentUser").get(verifyJWT,getCurrentUser)
 //email forgot
 router.route("/emailforgotpassword").post(forgotPassword);
 
-//Google Auth
-router.route('/auth/google')
-  .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// Route for Google callback after authentication
-router.route('/auth/google/callback')
-  .get(passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-    res.redirect('/log');
-  });
-
-// Route for logging out
-router.route('/auth/logout')
-  .get((req, res) => {
-    req.logout();
-    res.redirect('/');
-  });
-
-router.route('/').get((req, res) => {
-    res.render('login')
-  })
-router.get("/log", async(req,res)=>{
-    res.render('index',{userinfo:req.user})
-})
 
 export default router;
