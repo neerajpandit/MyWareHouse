@@ -2,11 +2,12 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import passport from 'passport'
+import passport from "passport";
 const app = express();
-
+import http from "http";
+const server = http.createServer(app);
 app.use(
-  cors()
+  cors(),
   //   {
   //   origin: process.env.CORS_ORIGIN,
   //   credentials: true,
@@ -17,24 +18,25 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
-app.set('view engine','ejs');
+app.set("view engine", "ejs");
 app.use(
   session({
     secret: process.env.ACCESS_TOKEN_SECRET, // Replace with your secret key
     resave: false,
-    saveUninitialized: false
-  })
+    saveUninitialized: false,
+  }),
 );
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
 import userRouter from "./routes/user.routes.js";
 import storageRouter from "./routes/storage.routes.js";
-import homeRouter from "./routes/home.routes.js"
+import homeRouter from "./routes/home.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/storage", storageRouter);
+app.use("/api/v1/home", homeRouter);
+app.use("/api/v1/chat", chatRouter);
 
-app.use("/api/v1/users",userRouter)
-app.use("/api/v1/storage",storageRouter)
-app.use("/api/v1/home",homeRouter)
-
-export { app };
+export { app,server };
