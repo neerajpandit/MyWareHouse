@@ -5,7 +5,20 @@ import session from "express-session";
 import passport from "passport";
 const app = express();
 import http from "http";
+
+
+import { Server as SocketIOServer } from 'socket.io';
+import { handleSocketConnection } from './controllers/chat.controller.js';
 const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: '*', // Allow all origins for simplicity. Adjust for production.
+  },
+});
+
+handleSocketConnection(io);
+
+
 app.use(
   cors(),
   //   {
